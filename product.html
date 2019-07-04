@@ -1,0 +1,117 @@
+<html>
+
+<head>
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+
+        $(function () {
+            var $product = $('#product');
+            var $name = $('#idname');
+            var $mrp = $('#idmrp');
+            function getProduct(prod) {
+                console.log(prod)
+                $product.append(
+
+                    '<tr class="row">' +
+                    '<td class="list-group-item col-md-4">' + prod.id + '</td>' +
+                    '<td class="list-group-item col-md-4">' + prod.productName + '</td>' +
+                    '<td class="list-group-item col-md-4">' + prod.productMrp + '</td>' +
+                    '</tr>');
+
+            }
+
+            $('#view').click(function () {
+                console.log("test");
+                $.ajax({
+
+                    
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    url: "http://localhost:3000/product/viewall",
+                    
+                    success: function (product) {
+                       
+                        $.each(product, function (i, prod) {
+                            getProduct(prod);
+                           
+
+                        });
+                        
+                    },
+                    error: function () {
+                        alert('error view data');
+                    }
+                })
+            })
+
+            $('#insert').click(function () {
+                console.log("test");
+                var prod = {
+                    productName: $name.val(),
+                    productMrp: $mrp.val(),
+                };
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json",
+                    url: 'http://localhost:3000/product/insert',
+                    data: JSON.stringify(prod),
+                    success: function (product) {
+                        console.log(product);
+                        addProduct(prod);
+                    },
+                    error: function (e) {
+                        console.log("errr>>>>>>", e)
+                    }
+
+                });
+            });
+
+        });
+
+        function updateFunction() {
+            alert("You entered Update button");
+        }
+        function deleteFunction() {
+            alert("You entered Delete button");
+        }
+    </script>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Select Your Option</h2>
+
+        <button type="button" class="btn btn-primary" id="insert">Insert</button>
+        <button type=" button" class="btn btn-primary" id="view">View</button>
+        <button type=" button" class="btn btn-primary" onclick="updateFunction()">Update</button>
+        <button type="button" class="btn btn-primary" onclick="deleteFunction()">Delete</button>
+        <div class="form-group">
+            <label for="pname">Product Name:</label>
+            <input type="text" class="form-control" id="idname" name="productname">
+        </div>
+        <div class="form-group">
+            <label for="pmrp">Product MRP:</label>
+            <input type="number" class="form-control" id="idmrp" name="productmrp">
+        </div>
+
+        <h2>List</h2>
+        <table id="product" style="width: 100%" >
+            <tr class="row" id="head1">
+                <th class="col-sm-4" style="background-color:yellow;">PRODUCT No</th>
+                <th class="col-sm-4" style="background-color:orange;">PRODUCT NAME</th>
+                <th class="col-sm-4" style="background-color:yellow;">PRODUCT MRP</th>
+            </tr>
+            
+        </table>
+
+    </div>
+</body>
+
+</html>
